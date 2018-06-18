@@ -8,6 +8,7 @@
             border-spacing: 0;
             border-color: #ccc;
         }
+
         .tg td {
             font-family: Arial, sans-serif;
             font-size: 14px;
@@ -20,6 +21,7 @@
             color: #333;
             background-color: #fff;
         }
+
         .tg th {
             font-family: Arial, sans-serif;
             font-size: 14px;
@@ -33,6 +35,7 @@
             color: #333;
             background-color: #f0f0f0;
         }
+
         .tg .tg-4eph {
             background-color: #f9f9f9
         }
@@ -47,91 +50,75 @@
 <h1>Book List</h1>
 
 <#if listBooks?has_content>
-    <table class="tg">
+<table class="tg">
+    <tr>
+        <th width="80">ID</th>
+        <th width="120">Title</th>
+        <th width="120">Author</th>
+        <th width="120">Price</th>
+        <th width="60">Edit</th>
+        <th width="60">Delete</th>
+    </tr>
+    <#list listBooks as book>
         <tr>
-            <th width="80">ID</th>
-            <th width="120">Title</th>
-            <th width="120">Author</th>
-            <th width="120">Price</th>
-            <th width="60">Edit</th>
-            <th width="60">Delete</th>
+            <td>${book.id}</td>
+            <td><a href="/bookdata/${book.id}">${book.bookTitle}</a></td>
+            <td>${book.bookAuthor}</td>
+            <td>${book.bookPrice/100}</td>
+            <td><a href="/edit/${book.id}">Edit</a></td>
+            <td><a href="/remove/${book.id}">Delete</a></td>
         </tr>
-        <#list listBooks as book>
-            <tr>
-                <td>${book.id}</td>
-                <td><a href="/bookdata/${book.id}">${book.bookTitle}</a></td>
-                <td>${book.bookAuthor}</td>
-                <td>${book.bookPrice/100}</td>
-                <td><a href="/edit/${book.id}">Edit</a></td>
-                <td><a href="/remove/${book.id}">Delete</a></td>
-            </tr>
-        </#list>
-    </table>
+    </#list>
+</table>
 </#if>
 
 
-<h1>To add or edit a book</h1>
 
-<c:url var="addAction" value="/books/add"/>
+<#if !book.bookTitle?has_content>
+    <#assign name="Add book">
+    <#assign button="Add">
+<#else >
+    <#assign name="Edit book">
+    <#assign button="Edit">
+</#if>
 
-<form:form action="${addAction}" commandName="book">
+<h2>${name}</h2>
+<form name="book" action="/books/add" method="post">
     <table>
-        <c:if test="${!empty book.bookTitle}">
-            <tr>
-                <td>
-                    <form:label path="id">
-                        <spring:message text="ID"/>
-                    </form:label>
-                </td>
-                <td>
-                    <form:input path="id" readonly="true" size="8" disabled="true"/>
-                    <form:hidden path="id"/>
-                </td>
-            </tr>
-        </c:if>
+    <#if book.bookTitle?has_content>
         <tr>
+            <td>Id</td>
             <td>
-                <form:label path="bookTitle">
-                    <spring:message text="Title"/>
-                </form:label>
+                <input type="text" name="id" value="${book.id}" readonly>
             </td>
+        </tr>
+    </#if>
+        <tr>
+            <td>BookTitle</td>
             <td>
-                <form:input path="bookTitle"/>
+                <input type="text" name="bookTitle" value="${book.bookTitle}">
             </td>
         </tr>
         <tr>
+            <td>BookAuthor</td>
             <td>
-                <form:label path="bookAuthor">
-                    <spring:message text="Author"/>
-                </form:label>
-            </td>
-            <td>
-                <form:input path="bookAuthor"/>
+                <input type="text" name="bookAuthor" value="${book.bookAuthor}">
             </td>
         </tr>
         <tr>
+            <td>BookPrice</td>
             <td>
-                <form:label path="price">
-                    <spring:message text="Price"/>
-                </form:label>
-            </td>
-            <td>
-                <form:input path="price"/>
+                <input type="text" name="bookPrice" value="${book.bookPrice}">
             </td>
         </tr>
         <tr>
-            <td colspan="2">
-                <c:if test="${!empty book.bookTitle}">
-                    <input type="submit"
-                           value="<spring:message text="Edit Book"/>"/>
-                </c:if>
-                <c:if test="${empty book.bookTitle}">
-                    <input type="submit"
-                           value="<spring:message text="Add Book"/>"/>
-                </c:if>
+            <td></td>
+            <td>
+                <input type="submit" value="${button}">
             </td>
         </tr>
+
     </table>
-</form:form>
+</form>
 </body>
 </html>

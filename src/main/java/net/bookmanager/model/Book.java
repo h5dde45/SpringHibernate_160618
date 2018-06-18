@@ -21,6 +21,8 @@ public class Book {
     private int bookPrice;
 
     public Book() {
+        bookTitle="";
+        bookAuthor="";
     }
 
     public int getId() {
